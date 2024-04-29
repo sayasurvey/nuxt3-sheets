@@ -4,15 +4,17 @@
   const headings = ref(null)
   const result = ref([])
   const {data} = await allRows()
-
-  headings.value = data.value.values[0]
-  result.value = [...data.value.values]
-  result.value.splice(0, 1)
+  if (data.value !== null && data.value !== undefined) {
+    headings.value = data.value.values[0];
+    result.value = [...data.value.values]
+    result.value.splice(0, 1)
+  }
 </script>
 
 <template>
   <div class="container">
-    <table>
+    <p>test</p>
+    <!-- <table>
       <thead>
         <tr>
           <th v-for="col in headings" :key="col" v-html="col"></th>
@@ -30,7 +32,7 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
   </div>
 </template>
 
