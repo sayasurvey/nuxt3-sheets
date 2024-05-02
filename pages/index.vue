@@ -1,12 +1,32 @@
 <script setup>
-  import {allRows} from '@/composables/useSheet';
+  import {allRows, addRow} from '@/composables/useSheet';
 
   const headings = ref(null)
   const result = ref([])
   const response = await allRows()
+  const formData = ref({
+    name: '',
+    email: ''
+  })
+  const input = ref([]);
+
   headings.value = response.values[0];
   result.value = [...response.values]
   result.value.splice(0, 1)
+
+  const submitForm = async () => {
+    input.value = { values: [formData.value.name, formData.value.email] };
+
+    try {
+      await addRow(input.value);
+      // result.value.push([formData.value.name, formData.value.email]);
+    } catch (error) {
+      console.error(error);
+    }
+
+    formData.value.name = ''
+    formData.value.email = ''
+  }
 </script>
 
 <template>
@@ -30,6 +50,14 @@
         </tr>
       </tbody>
     </table>
+
+    <div>
+      <form @submit.prevent="submitForm">
+        <input v-model="formData.name" />
+        <input v-model="formData.email" />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   </div>
 </template>
 
