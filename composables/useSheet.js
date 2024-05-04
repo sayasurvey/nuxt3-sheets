@@ -1,4 +1,5 @@
 let sheetRange = "シート1!A1:D200";
+const {google} = require('googleapis');
 
 const getVars = () => {
   const SPREAD_SHEET_ID = useRuntimeConfig().public.SPREAD_SHEET_ID;
@@ -27,17 +28,25 @@ export async function singleRow(row) {
   return await useFetch(url)
 }
 
-export async function addRow(row) {
+export async function addRow() {
   const { SPREAD_SHEET_ID, GOOGLE_API_KEY } = getVars();
-  const inputRange = `シート1!A50`
 
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREAD_SHEET_ID}/values/${inputRange}:append?valueInputOption=USER_ENTERED&key=${GOOGLE_API_KEY}`
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(row),
-  }
-  return await fetch(url, options)
+  const auth = await google.auth.getClient({
+      scopes: ['https://www.googleapis.com/auth/spreadsheets']
+  });
+  const sheets = google.sheets({version: 'v4', auth});
+
+  const req = {
+      spreadsheetId: SPREAD_SHEET_ID,
+      range: 'A1',
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      resource: {
+          values: [
+              ['a', 'b', 'c'],
+          ],
+      },
+  };
+
+  await sheets.spreadsheets.values.append(req);
 }

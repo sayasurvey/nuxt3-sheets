@@ -15,10 +15,11 @@
   result.value.splice(0, 1)
 
   const submitForm = async () => {
+    console.log('submitForm', formData.value.name, formData.value.email)
     input.value = { values: [formData.value.name, formData.value.email] };
 
     try {
-      await addRow(input.value);
+      await addRow();
       // result.value.push([formData.value.name, formData.value.email]);
     } catch (error) {
       console.error(error);
